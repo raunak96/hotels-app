@@ -9,7 +9,6 @@ const RoomProvider = ({children}) => {
     const [fieldsForFilter, setFieldsForFilter] = useState({type: "all",capacity: 1,price: 0,minPrice:  0,maxPrice: 0,minSize: 0,maxSize: 0,breakfast: false,pets: false,intialised: false});
     
     useEffect(()=>{
-        console.log("Use effect 1 called!");
         const getData = async()=>{
             try {
                 const {items} = await Client.getEntries({
@@ -56,7 +55,6 @@ const RoomProvider = ({children}) => {
     },[]);
 
     useEffect(()=>{
-        console.log(fieldsForFilter.intialised)
         if(fieldsForFilter.intialised)
             setRoomData(prevState=>({...prevState,sortedRooms: filterRooms(prevState,fieldsForFilter)}));
     },[fieldsForFilter,filterRooms]);
@@ -66,7 +64,6 @@ const RoomProvider = ({children}) => {
     const handleChange = (e)=> {
         const {type,name} = e.target;
         const value = type === "checkbox" ? e.target.checked : e.target.value;
-        console.log(`type: ${type}, name:${name}, value:${value}`)
         setFieldsForFilter({...fieldsForFilter,[name]:value});
     }
     
