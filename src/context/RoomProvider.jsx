@@ -1,5 +1,6 @@
 import React, { createContext, useState, useEffect, useCallback } from 'react';
-import items from "../data";
+// import items from "../data";
+import Client from "../Contentful";
 
 const RoomContext = createContext();
 
@@ -9,16 +10,28 @@ const RoomProvider = ({children}) => {
     
     useEffect(()=>{
         console.log("Use effect 1 called!");
-        const rooms = items.map((item) => {
-            let id = item.sys.id;
-            let images = item.fields.images.map((image) => image.fields.file.url);
-            return { ...item.fields, images, id };
-        });
-        const featuredRooms = rooms.filter((room) => room.featured === true);
-        const maxPrice = Math.max(...rooms.map((item) => item.price));
-        const maxSize = Math.max(...rooms.map((item) => item.size));
-        setFieldsForFilter(prevState=>({...prevState,price:maxPrice,maxPrice,maxSize,intialised: true}));
-        setRoomData(prevState=>({...prevState,rooms,sortedRooms:rooms, featuredRooms,loading:false}));
+        const getData = async()=>{
+            try {
+                const {items} = await Client.getEntries({
+                    content_type: "hotelRoom",
+                    order: "fields.price"
+				});
+				const rooms = items.map((item) => {
+                    let id = item.sys.id;
+                    let images = item.fields.images.map((image) => image.fields.file.url);
+                        return { ...item.fields, images, id };
+                });
+                const featuredRooms = rooms.filter((room) => room.featured === true);
+                const maxPrice = Math.max(...rooms.map((item) => item.price));
+                const maxSize = Math.max(...rooms.map((item) => item.size));
+                setFieldsForFilter(prevState=>({...prevState,price:maxPrice,maxPrice,maxSize,intialised: true}));
+                setRoomData(prevState=>({...prevState,rooms,sortedRooms:rooms, featuredRooms,loading:false}));
+            } catch (error) {
+                setRoomData(prevState=>({...prevState,loading:false}));
+            }
+        }
+        getData();
+        
     },[]);
 
     const filterRooms = useCallback((roomsTemp,filteredFields)=>{

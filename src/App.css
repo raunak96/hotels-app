@@ -521,11 +521,11 @@ input[type='range'] {
     border-radius: 10px;
   }
   input[type='range']::-webkit-slider-thumb {
-    width: 10px;
+    width: 12px;
     -webkit-appearance: none;
-    height: 10px;
+    height: 12px;
     cursor: ew-resize;
-    background:#bababa;
+    background:#fefefe;
     color: #43e5f7;
     cursor: pointer;
     border: 1px solid rgba(0, 0, 0, 0.5);
